@@ -8,7 +8,6 @@ from tkinter import ttk, messagebox
 
 def run_simulation(params):
 
-    mj_kg = params['mj_kg']
     initial_mass = params['initial_mass']
     fuel_mass = params['fuel_mass']
     fuel_burn_rate = params['fuel_burn_rate']
@@ -81,7 +80,6 @@ def run_simulation(params):
 def start_simulation():
     try:
         params = {
-            "mj_kg": float(entry_mj_kg.get()),
             "initial_mass": float(entry_mass.get()),
             "fuel_mass": float(entry_fuel_mass.get()),
             "fuel_burn_rate": float(entry_burn_rate.get()),
@@ -89,7 +87,7 @@ def start_simulation():
             "sim_time": float(entry_sim_time.get()),
         }
     except ValueError:
-        messagebox.showerror("Input Error", "Please enter valid numeric values.")
+        messagebox.showerror("Input Error", "Please use numeric values.")
         return
 
     results = run_simulation(params)
@@ -97,18 +95,18 @@ def start_simulation():
     fig, ax1 = plt.subplots(figsize=(8, 6))
     ax1.plot(results["time"], results["height"], color="blue", label="Height (m)")
     ax1.set_xlabel("Time (s)")
-    ax1.set_ylabel("Height (m)", color="blue")
-    ax1.tick_params(axis="y", labelcolor="blue")
+    ax1.set_ylabel("Height (m)", color = "blue")
+    ax1.tick_params(axis = "y", labelcolor = "blue")
     ax1.grid(True)
 
     ax2 = ax1.twinx()
-    ax2.plot(results["time"], results["velocity"], color="red", label="Velocity (m/s)")
-    ax2.set_ylabel("Velocity (m/s)", color="red")
-    ax2.tick_params(axis="y", labelcolor="red")
+    ax2.plot(results["time"], results["velocity"], color = "red", label = "Velocity (m/s)")
+    ax2.set_ylabel("Velocity (m/s)", color = "red")
+    ax2.tick_params(axis="y", labelcolor = "red")
 
-    ax1.legend(loc="upper left")
-    ax2.legend(loc="upper right")
-    plt.title("Rocket Launch Simulation")
+    ax1.legend(loc = "upper left")
+    ax2.legend(loc = "upper right")
+    plt.title("Rocket_Launch_Simulation")
 
     for widget in frame_plot.winfo_children():
         widget.destroy()
@@ -126,37 +124,39 @@ def start_simulation():
 
 
 root = tk.Tk()
-root.title("Rocket Simulation")
-root.geometry("900x700")
-
-frame_inputs = ttk.Frame(root, padding=10)
+root.title("Rocket_Simulation")
+root.geometry("1000x800")
+frame_inputs_outer = tk.Frame(root, relief = tk.SOLID, borderwidth = 2, background ="black", padx =10, pady = 10, )
+frame_inputs_outer.pack(side = tk.TOP, fill =tk.X, padx = 10, pady = 10)
+frame_inputs = ttk.Frame(root, padding=20)
 frame_inputs.pack(side=tk.TOP, fill=tk.X)
 
 labels = [
-    ("Energy Density (MJ/kg):", "140"),
     ("Rocket Mass (kg):", "20000"),
-    ("Fuel Mass (kg):", "700"),
+    ("Fuel Mass (kg)-", "700"),
     ("Fuel Burn Rate (kg/s):", "100"),
-    ("Exhaust Velocity (m/s):", "3000"),
+    ("Exhaust Velocity (m/s)-", "3000"),
     ("Simulation Time (s):", "1200"),
 ]
 entries = []
 
 for i, (label_text, default) in enumerate(labels):
-    ttk.Label(frame_inputs, text=label_text).grid(row=i, column=0, sticky=tk.W, padx=5, pady=3)
-    e = ttk.Entry(frame_inputs)
+    tk.Label(frame_inputs, text=label_text).grid(row=i, column=0, sticky=tk.W, padx=5, pady=3)
+    e = tk.Entry(frame_inputs)
     e.insert(0, default)
     e.grid(row=i, column=1, padx=5, pady=3)
     entries.append(e)
 
-(entry_mj_kg, entry_mass, entry_fuel_mass, entry_burn_rate, entry_exhaust_velocity, entry_sim_time) = entries
+(entry_mass, entry_fuel_mass, entry_burn_rate, entry_exhaust_velocity, entry_sim_time) = entries
 
-ttk.Button(frame_inputs, text="Run Simulation", command=start_simulation).grid(row=0, column=2, rowspan=2, padx=10)
+btn = tk.Button(frame_inputs, text="Run_Simulation", bg = "light pink", fg = "black", width = 50, command=start_simulation).grid(row=0, column=2, rowspan=2, padx=100, ipady = 20,)
 
-lbl_results = ttk.Label(frame_inputs, text="", font=("Arial", 11), foreground="blue")
+#also ttk is terrible according to my calculations and tk is superior, no bg, and no ipady. = no use.
+
+lbl_results = tk.Label(frame_inputs, text="", font=("Arial", 16), foreground="black")
 lbl_results.grid(row=6, column=0, columnspan=3, pady=10)
 
-frame_plot = ttk.Frame(root)
-frame_plot.pack(fill=tk.BOTH, expand=True)
+frame_plot = tk.Frame(root, relief = tk.SOLID, borderwidth = 2, background = "white")
+frame_plot.pack(fill=tk.BOTH, expand=True, padx = 10, pady = 10)
 
 root.mainloop()
